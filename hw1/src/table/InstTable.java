@@ -51,7 +51,7 @@ public class InstTable {
 	 */
 	public InstTuple lookup(String ID) {
 		for (InstTuple tuple : this.tuples) {
-			if (tuple.getID() == ID)
+			if (tuple.getID().equals(ID))
 				return tuple;
 		}
 		return null;
