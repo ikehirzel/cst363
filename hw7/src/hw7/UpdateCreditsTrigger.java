@@ -1,7 +1,11 @@
 package hw7;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.h2.api.Trigger;
-import java.sql.*;
 
 /* 
  * oldRow and newRow refer to row in takes table
@@ -55,18 +59,29 @@ public class UpdateCreditsTrigger implements Trigger {
 			// TODO prepare and execute a query to calculate the total credits for a student where id = student_id
 			//      Use parameter markers (e.g. ?) to pass the value of student_id to the sql statement.
 			
-			 rs1.next();
-			 int credits = rs1.getInt(1);
+			PreparedStatement get_cred_stmt= conn.prepareStatement("select sum(credits) from takes"
+					+ "left join course on takes.course_id = course.course_id"
+					+ "where takes.id = ?;");
+			get_cred_stmt.setString(1, student_id);
+			rs1 = get_cred_stmt.executeQuery();
+			rs1.next();
+			
+			int credits = rs1.getInt(1);
 			 
 			
-			 int row_update_count = 0; 
+			int row_update_count = 0; 
 			 
 			 // TODO update the tot_cred in student table for the student with id = student_id
 			 
-			 
-			 if (row_update_count == 0) {
-				 System.out.println("UpdateCreditsTrigger update failed id= "+student_id+" tot_cred="+credits );
-			 }
+			PreparedStatement update_cred_stmt = conn.prepareStatement("update student set tot_cred = ? where student_id = ?");
+			
+			update_cred_stmt.setInt(1, credits);
+			update_cred_stmt.setString(2, student_id);
+			row_update_count = update_cred_stmt.executeUpdate();
+			
+			if (row_update_count == 0) {
+				System.out.println("UpdateCreditsTrigger update failed id= "+student_id+" tot_cred="+credits );
+			}
 			 
 		} catch (SQLException ex) {
 			System.out.println("UpdateCreditsTrigger exception. "+ex.getMessage());
