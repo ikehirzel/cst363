@@ -1,0 +1,68 @@
+// for quickdatabasediagrams.com
+
+patient
+-
+ssn varchar PK
+name varchar
+age int
+address varchar
+primary_physician varchar FK >- doctor.ssn
+
+doctor
+-
+ssn varchar PK
+name varchar
+specialty varchar
+
+
+company
+-
+name varchar PK
+
+
+drug
+-
+name varchar PK
+formula varchar
+company_name varchar FK >- company.name
+
+
+pharmacy
+-
+name varchar PK
+address varchar
+phone_number varchar
+
+
+sells
+-
+pharmacy_name varchar FK >- pharmacy.name
+drug_name varchar FK >- drug.name
+price double
+
+
+prescrption
+-
+id int PK
+doctor_ssn varchar FK >- doctor.ssn
+patient_ssn varchar FK >- patient.ssn
+drug_name varchar FK >- drug.name
+date varchar
+quantity int
+pharmacy_filled_by varchar FK >- pharmacy.name
+
+
+contract
+-
+pharmacy_name varchar FK >- pharmacy.name
+company_name varchar FK >- company.name
+supervisor_email varchar FK - supervisor.email
+start_date varchar
+end_date varchar
+text varchar
+
+
+supervisor
+-
+email varchar
+phone_number varchar
