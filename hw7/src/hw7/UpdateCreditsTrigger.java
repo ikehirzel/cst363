@@ -59,21 +59,18 @@ public class UpdateCreditsTrigger implements Trigger {
 			// TODO prepare and execute a query to calculate the total credits for a student where id = student_id
 			//      Use parameter markers (e.g. ?) to pass the value of student_id to the sql statement.
 			
-			PreparedStatement get_cred_stmt= conn.prepareStatement("select sum(credits) from takes"
-					+ "left join course on takes.course_id = course.course_id"
-					+ "where takes.id = ?;");
+			PreparedStatement get_cred_stmt = conn.prepareStatement("select sum(credits) from takes left join course on takes.course_id = course.course_id where id = ? and substr(grade, 1, 1) != 'D' and substr(grade, 1, 1) != 'F';");
 			get_cred_stmt.setString(1, student_id);
 			rs1 = get_cred_stmt.executeQuery();
 			rs1.next();
 			
 			int credits = rs1.getInt(1);
 			 
-			
-			int row_update_count = 0; 
+			int row_update_count = 0;
 			 
 			 // TODO update the tot_cred in student table for the student with id = student_id
 			 
-			PreparedStatement update_cred_stmt = conn.prepareStatement("update student set tot_cred = ? where student_id = ?");
+			PreparedStatement update_cred_stmt = conn.prepareStatement("update student set tot_cred = ? where id = ?");
 			
 			update_cred_stmt.setInt(1, credits);
 			update_cred_stmt.setString(2, student_id);
